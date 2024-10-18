@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutinas de Gimnasio</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Tabla para mostrar el preview -->
+    {% if df_csv.any %}
+    <div class="container" style="overflow: scroll;">
+        <h2>Preview del archivo de CSV:</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    {% for col in df_csv.columns %}
+                        <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in df_csv.head(2).values %}
+                    <tr>
+                        {% for item in row %}
+                            <td>{{ item }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+    
+
+    <!-- Tabla para mostrar el preview -->
+    {% if df_xlsx.any %}
+    <div class="container">
+        <h2>Preview del archivo de Excel:</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    {% for col in df_xlsx.columns %}
+                        <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in df_xlsx.head(2).values %}
+                    <tr>
+                        {% for item in row %}
+                            <td>{{ item }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <!-- Tabla para mostrar el preview -->
+    {% if df_text.any %}
+    <div class="container">
+        <h2>Preview del archivo de Texto:</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    {% for col in df_text.columns %}
+                        <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in df_text.head(2).values %}
+                    <tr>
+                        {% for item in row %}
+                            <td>{{ item }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</body>
+</html>

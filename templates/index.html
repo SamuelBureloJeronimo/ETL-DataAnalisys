@@ -1,0 +1,18 @@
+<h1>Sube un archivo CSV, TXT o XLSX</h1>
+
+<!-- Formulario para subir archivos -->
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="files" accept=".csv, .txt, .xlsx" multiple>
+    <button type="submit">Subir Archivo</button>
+</form>
+
+<!-- Mostrar mensajes flash -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endwith %}
