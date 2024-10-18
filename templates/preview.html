@@ -7,80 +7,83 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <!-- Tabla para mostrar el preview -->
-    {% if df_csv.any %}
-    <div class="container" style="overflow: scroll;">
-        <h2>Preview del archivo de CSV:</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    {% for col in df_csv.columns %}
-                        <th>{{ col }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in df_csv.head(2).values %}
-                    <tr>
-                        {% for item in row %}
-                            <td>{{ item }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
+    <div class="container">
+        <h1 class="my-4">Características del Archivo de TEXTO</h1>
+        
+        <!-- Opciones de limpieza -->
+        <div class="mt-4">
+            <h2>Opciones de Limpieza</h2>
+            <form action="/clean" method="post">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="remove-nulls_txt" name="remove-nulls_txt">
+                    <label class="form-check-label" for="remove-nulls">Eliminar filas con valores nulos</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="remove-duplicates_txt" name="remove-duplicates_txt">
+                    <label class="form-check-label" for="remove-duplicates">Eliminar duplicados</label>
+                </div>
+                <button type="submit" class="btn btn-success mt-2">Aplicar Limpieza</button>
+            </form>
+        </div>
+
+        <h2>Estadísticas Descriptivas</h2>
+        <!-- Mostrar estadísticas descriptivas -->
+        {{ df_text.tabla_estadisticas | safe }}
+        
+        <h2 class="mt-4">Información de Columnas</h2>
+        <!-- Mostrar información sobre columnas -->
+        {{ df_text.tabla_info | safe }}
+
+        <div class="container" style="overflow: scroll;">
+            <h2 class="mt-4">Primeras 5 Filas</h2>
+            <!-- Mostrar información sobre columnas -->
+            {{ df_text.tabla | safe }} 
+        </div>
     </div>
     
+    <br>
+    <br>
+    <hr/>
+    <br>
+    <br>
 
-    <!-- Tabla para mostrar el preview -->
-    {% if df_xlsx.any %}
     <div class="container">
-        <h2>Preview del archivo de Excel:</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    {% for col in df_xlsx.columns %}
-                        <th>{{ col }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in df_xlsx.head(2).values %}
-                    <tr>
-                        {% for item in row %}
-                            <td>{{ item }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
+        <h1 class="my-4">Características del Archivo de XLSX - EXCEL</h1>
+        
+        <h2>Estadísticas Descriptivas</h2>
+        <!-- Mostrar estadísticas descriptivas -->
+        {{ df_xlsx.tabla_estadisticas | safe }}
+        
+        <h2 class="mt-4">Información de Columnas</h2>
+        <!-- Mostrar información sobre columnas -->
+        {{ df_text.tabla_info | safe }}
+
+        <div class="container" style="overflow: scroll;">
+            <h2 class="mt-4">Primeras 5 Filas</h2>
+                <!-- Mostrar información sobre columnas -->
+                {{ df_text.tabla | safe }} 
+            </div>
     </div>
+    <br>
+    <br>
+    <hr/>
+    <br>
+    <br>
 
-    <!-- Tabla para mostrar el preview -->
-    {% if df_text.any %}
     <div class="container">
-        <h2>Preview del archivo de Texto:</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    {% for col in df_text.columns %}
-                        <th>{{ col }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in df_text.head(2).values %}
-                    <tr>
-                        {% for item in row %}
-                            <td>{{ item }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
+        <h1 class="my-4">Características del Archivo de CSV </h1>
+        
+        <h2>Estadísticas Descriptivas</h2>
+        <!-- Mostrar estadísticas descriptivas -->
+        {{ df_csv.tabla_estadisticas | safe }}
+        
+        <h2 class="mt-4">Información de Columnas</h2>
+        <!-- Mostrar información sobre columnas -->
+        {{ df_csv.tabla_info | safe }}
+        <div class="container" style="overflow: scroll;">
+        <h2 class="mt-4">Primeras 5 Filas</h2>
+            <!-- Mostrar información sobre columnas -->
+            {{ df_csv.tabla | safe }} 
+        </div>
     </div>
 </body>
-</html>

@@ -11,26 +11,14 @@ app.secret_key = 'supersecretkey'
 def index():
     return render_template('index.html');
 
-@app.route('/limpiar-txt')
-def limpiar_txt():
-    # Ruta del archivo TXT
-    file_path_txt = request.cookies.get('file_path_txt')
+@app.route('/clean', methods=['POST'])
+def clean_data():
+    # Aquí debes recibir el DataFrame que has cargado
+    # Por simplicidad, vamos a reusar la información del DataFrame
+    # En una implementación real, deberías almacenar el DataFrame en una sesión o similar
 
-    # Leer el archivo de texto y cargarlo en un DataFrame
-    df = pd.read_csv(file_path_txt, delimiter='|')
-    
-    # Limpiar el DataFrame
-    df.columns = df.columns.str.strip()
-    df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-    
-    # Convertir el DataFrame a HTML
-    tabla_html = df.to_html(classes='table table-striped', index=False)
-    
-    # Renderizar la tabla en una plantilla HTML
-    return render_template('tabla.html', tabla=tabla_html)
-
-@app.route('/preview')
-def preview():
+    # Simulación de un DataFrame cargado para limpieza
+    # En un caso real, puedes utilizar sesiones o almacenar el DataFrame
     # Obtener rutas de los archivos desde las cookies
     file_path_csv = request.cookies.get('file_path_csv')  # Ruta del archivo CSV
     file_path_xlsx = request.cookies.get('file_path_xlsx')  # Ruta del archivo XLSX
@@ -58,11 +46,125 @@ def preview():
         except Exception as e:
             flash(f'Error al leer el archivo TXT: {str(e)}')
 
+    # Leer las opciones de limpieza
+    remove_nulls_txt = 'remove-nulls_txt' in request.form
+    remove_duplicates_txt = 'remove-duplicates_txt' in request.form
+
+    # Aplicar limpieza según opciones seleccionadas
+    if remove_nulls_txt:
+        df_text = df_text.dropna()
+    if remove_duplicates_txt:
+        df_text = df_text.drop_duplicates()
+
+    # Obtener características del DataFrame después de la limpieza
+    num_rows = df_text.shape[0]
+    num_columns = df_text.shape[1]
+    columns = df_text.columns.tolist()
+    null_values = df_text.isnull().sum().tolist()
+
+    # Convertir el DataFrame a HTML
+    data_info = {
+        'num_rows': num_rows,
+        'num_columns': num_columns,
+        'columns': columns,
+        'null_values': null_values,
+        'dataframe': df_text.to_html(classes='table table-striped', index=False)
+    }
+
+    return render_template('uploads.html', data_info=data_info)
+
+
+@app.route('/preview')
+def preview():
+    # Obtener rutas de los archivos desde las cookies
+    file_path_csv = request.cookies.get('file_path_csv')  # Ruta del archivo CSV
+    file_path_xlsx = request.cookies.get('file_path_xlsx')  # Ruta del archivo XLSX
+    file_path_txt = request.cookies.get('file_path_txt')  # Ruta del archivo TXT
+
+    # Inicializar variables para los DataFrames
+    df_csv, df_xlsx, df_text = None, None, None
+
+    # Verificar si las rutas están presentes antes de leer los archivos
+    if file_path_csv:
+        try:
+            df_csv = pd.read_csv(file_path_csv)  # Leer el archivo CSV
+
+            # Obtener información sobre el DataFrame
+            est_csv = df_csv.describe()  # Estadísticas descriptivas
+            colums_csv = df_csv.columns.tolist()  # Nombres de columnas
+            tipos_datos_csv = df_csv.dtypes  # Tipos de datos
+            valores_nulos_csv = df_csv.isnull().sum()  # Valores nulos
+
+            # Convertir a HTML
+            tabla_est_csv = est_csv.to_html(classes='table table-striped')
+            tabla_info_csv = pd.DataFrame({
+                'Columnas': colums_csv,
+                'Tipos de Datos': tipos_datos_csv,
+                'Valores Nulos': valores_nulos_csv
+            }).to_html(classes='table table-striped')
+
+        except Exception as e:
+            flash(f'Error al leer el archivo CSV: {str(e)}')
+    
+    if file_path_xlsx:
+        try:
+            df_xlsx = pd.read_excel(file_path_xlsx)  # Leer el archivo XLSX
+
+            # Obtener información sobre el DataFrame
+            est_xlsx = df_xlsx.describe()  # Estadísticas descriptivas
+            colums_xlsx = df_xlsx.columns.tolist()  # Nombres de columnas
+            tipos_datos_xlsx = df_xlsx.dtypes  # Tipos de datos
+            valores_nulos_xlsx = df_xlsx.isnull().sum()  # Valores nulos
+
+            # Convertir a HTML
+            tabla_est_xlsx = est_xlsx.to_html(classes='table table-striped')
+            tabla_info_xlsx = pd.DataFrame({
+                'Columnas': colums_xlsx,
+                'Tipos de Datos': tipos_datos_xlsx,
+                'Valores Nulos': valores_nulos_xlsx
+            }).to_html(classes='table table-striped')
+
+        except Exception as e:
+            flash(f'Error al leer el archivo XLSX: {str(e)}')
+    
+    if file_path_txt:
+        try:
+            df_text = pd.read_csv(file_path_txt, delimiter='|')  # Leer el archivo TXT con tabulaciones
+            
+            # Obtener información sobre el DataFrame
+            estadisticas = df_text.describe()  # Estadísticas descriptivas
+            columnas = df_text.columns.tolist()  # Nombres de columnas
+            tipos_datos = df_text.dtypes  # Tipos de datos
+            valores_nulos = df_text.isnull().sum()  # Valores nulos
+
+            # Convertir a HTML
+            tabla_estadisticas = estadisticas.to_html(classes='table table-striped')
+            tabla_info = pd.DataFrame({
+                'Columnas': columnas,
+                'Tipos de Datos': tipos_datos,
+                'Valores Nulos': valores_nulos
+            }).to_html(classes='table table-striped')
+
+        except Exception as e:
+            flash(f'Error al leer el archivo TXT: {str(e)}')
+
     # Preparar contexto para la plantilla, enviando solo los DataFrames que no son None
     context = {
-        'df_csv': df_csv,
-        'df_xlsx': df_xlsx,
-        'df_text': df_text
+        'df_csv': {
+            'tabla': df_csv.head().to_html(classes='table table-striped'),
+            'tabla_estadisticas': tabla_est_csv,
+             'tabla_info': tabla_info_csv
+        },
+        'df_xlsx': {
+            'tabla': df_xlsx.head().to_html(classes='table table-striped'),
+            'tabla_estadisticas': tabla_est_xlsx,
+             'tabla_info': tabla_info_xlsx
+        },
+        'df_text': {
+            'tabla': df_text.head().to_html(classes='table table-striped'),
+            'tabla_estadisticas': tabla_estadisticas,
+             'tabla_info': tabla_info
+        }
     }
 
     return render_template('preview.html', **context)
