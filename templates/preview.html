@@ -8,69 +8,6 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="my-4">Características del Archivo de TEXTO</h1>
-        
-        <!-- Opciones de limpieza -->
-        <div class="mt-4">
-            <h2>Opciones de Limpieza</h2>
-            <form action="/clean" method="post">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="remove-nulls_txt" name="remove-nulls_txt">
-                    <label class="form-check-label" for="remove-nulls">Eliminar filas con valores nulos</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="remove-duplicates_txt" name="remove-duplicates_txt">
-                    <label class="form-check-label" for="remove-duplicates">Eliminar duplicados</label>
-                </div>
-                <button type="submit" class="btn btn-success mt-2">Aplicar Limpieza</button>
-            </form>
-        </div>
-
-        <h2>Estadísticas Descriptivas</h2>
-        <!-- Mostrar estadísticas descriptivas -->
-        {{ df_text.tabla_estadisticas | safe }}
-        
-        <h2 class="mt-4">Información de Columnas</h2>
-        <!-- Mostrar información sobre columnas -->
-        {{ df_text.tabla_info | safe }}
-
-        <div class="container" style="overflow: scroll;">
-            <h2 class="mt-4">Primeras 5 Filas</h2>
-            <!-- Mostrar información sobre columnas -->
-            {{ df_text.tabla | safe }} 
-        </div>
-    </div>
-    
-    <br>
-    <br>
-    <hr/>
-    <br>
-    <br>
-
-    <div class="container">
-        <h1 class="my-4">Características del Archivo de XLSX - EXCEL</h1>
-        
-        <h2>Estadísticas Descriptivas</h2>
-        <!-- Mostrar estadísticas descriptivas -->
-        {{ df_xlsx.tabla_estadisticas | safe }}
-        
-        <h2 class="mt-4">Información de Columnas</h2>
-        <!-- Mostrar información sobre columnas -->
-        {{ df_text.tabla_info | safe }}
-
-        <div class="container" style="overflow: scroll;">
-            <h2 class="mt-4">Primeras 5 Filas</h2>
-                <!-- Mostrar información sobre columnas -->
-                {{ df_text.tabla | safe }} 
-            </div>
-    </div>
-    <br>
-    <br>
-    <hr/>
-    <br>
-    <br>
-
-    <div class="container">
         <h1 class="my-4">Características del Archivo de CSV </h1>
         
         <h2>Estadísticas Descriptivas</h2>

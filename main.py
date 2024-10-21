@@ -71,18 +71,16 @@ def clean_data():
         'dataframe': df_text.to_html(classes='table table-striped', index=False)
     }
 
-    return render_template('uploads.html', data_info=data_info)
+    return render_template('uploads.html')
 
 
 @app.route('/preview')
 def preview():
     # Obtener rutas de los archivos desde las cookies
     file_path_csv = request.cookies.get('file_path_csv')  # Ruta del archivo CSV
-    file_path_xlsx = request.cookies.get('file_path_xlsx')  # Ruta del archivo XLSX
-    file_path_txt = request.cookies.get('file_path_txt')  # Ruta del archivo TXT
 
     # Inicializar variables para los DataFrames
-    df_csv, df_xlsx, df_text = None, None, None
+    df_csv = None
 
     # Verificar si las rutas están presentes antes de leer los archivos
     if file_path_csv:
@@ -105,65 +103,14 @@ def preview():
 
         except Exception as e:
             flash(f'Error al leer el archivo CSV: {str(e)}')
-    
-    if file_path_xlsx:
-        try:
-            df_xlsx = pd.read_excel(file_path_xlsx)  # Leer el archivo XLSX
-
-            # Obtener información sobre el DataFrame
-            est_xlsx = df_xlsx.describe()  # Estadísticas descriptivas
-            colums_xlsx = df_xlsx.columns.tolist()  # Nombres de columnas
-            tipos_datos_xlsx = df_xlsx.dtypes  # Tipos de datos
-            valores_nulos_xlsx = df_xlsx.isnull().sum()  # Valores nulos
-
-            # Convertir a HTML
-            tabla_est_xlsx = est_xlsx.to_html(classes='table table-striped')
-            tabla_info_xlsx = pd.DataFrame({
-                'Columnas': colums_xlsx,
-                'Tipos de Datos': tipos_datos_xlsx,
-                'Valores Nulos': valores_nulos_xlsx
-            }).to_html(classes='table table-striped')
-
-        except Exception as e:
-            flash(f'Error al leer el archivo XLSX: {str(e)}')
-    
-    if file_path_txt:
-        try:
-            df_text = pd.read_csv(file_path_txt, delimiter='|')  # Leer el archivo TXT con tabulaciones
-            
-            # Obtener información sobre el DataFrame
-            estadisticas = df_text.describe()  # Estadísticas descriptivas
-            columnas = df_text.columns.tolist()  # Nombres de columnas
-            tipos_datos = df_text.dtypes  # Tipos de datos
-            valores_nulos = df_text.isnull().sum()  # Valores nulos
-
-            # Convertir a HTML
-            tabla_estadisticas = estadisticas.to_html(classes='table table-striped')
-            tabla_info = pd.DataFrame({
-                'Columnas': columnas,
-                'Tipos de Datos': tipos_datos,
-                'Valores Nulos': valores_nulos
-            }).to_html(classes='table table-striped')
-
-        except Exception as e:
-            flash(f'Error al leer el archivo TXT: {str(e)}')
 
     # Preparar contexto para la plantilla, enviando solo los DataFrames que no son None
     context = {
         'df_csv': {
             'tabla': df_csv.head().to_html(classes='table table-striped'),
             'tabla_estadisticas': tabla_est_csv,
-             'tabla_info': tabla_info_csv
-        },
-        'df_xlsx': {
-            'tabla': df_xlsx.head().to_html(classes='table table-striped'),
-            'tabla_estadisticas': tabla_est_xlsx,
-             'tabla_info': tabla_info_xlsx
-        },
-        'df_text': {
-            'tabla': df_text.head().to_html(classes='table table-striped'),
-            'tabla_estadisticas': tabla_estadisticas,
-             'tabla_info': tabla_info
+             'tabla_info': tabla_info_csv,
+             'df': df_csv
         }
     }
 
@@ -204,11 +151,7 @@ def upload_file():
         
     return response;
 
-
-
-
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'xlsx'}
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
