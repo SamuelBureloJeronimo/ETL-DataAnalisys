@@ -1,18 +1,18 @@
-<h1>Sube un archivo CSV, TXT o XLSX</h1>
-
-<!-- Formulario para subir archivos -->
-<form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="files" accept=".csv, .txt, .xlsx" multiple>
-    <button type="submit">Subir Archivo</button>
-</form>
-
-<!-- Mostrar mensajes flash -->
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    <ul>
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-{% endwith %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Subir Archivos</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Subir Archivos</h1>
+        <form method="POST" enctype="multipart/form-data" action="/upload">
+            <input type="file" name="files" multiple>
+            <input type="submit" value="Upload">
+        </form>
+    </div>
+</body>
+</html>

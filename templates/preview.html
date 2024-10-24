@@ -1,26 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rutinas de Gimnasio</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Preview</title>
 </head>
-<body>
-    <div class="container">
-        <h1 class="my-4">Características del Archivo de CSV </h1>
-        
-        <h2>Estadísticas Descriptivas</h2>
-        <!-- Mostrar estadísticas descriptivas -->
-        {{ df_csv.tabla_estadisticas | safe }}
-        
-        <h2 class="mt-4">Información de Columnas</h2>
-        <!-- Mostrar información sobre columnas -->
-        {{ df_csv.tabla_info | safe }}
-        <div class="container" style="overflow: scroll;">
-        <h2 class="mt-4">Primeras 5 Filas</h2>
-            <!-- Mostrar información sobre columnas -->
-            {{ df_csv.tabla | safe }} 
-        </div>
+<body>   
+    <div class="container" style="overflow: scroll; text-align: center;">
+        <form action="{{ url_for('edit_file') }}" method="post">
+            {% for df in dataframes %}
+            <h1>Primeros 2 elementos de la tabla</h1>
+            <div class="container" style="overflow: scroll;">{{ df.preview|safe }}</div>
+                <input type="hidden" name="filepath_UP" value="{{ df.filepath }}">
+                <h2>Edición de columnas</h2>
+                <input type="checkbox" name="eliminar_nulos"> Eliminar Valores nulos y duplicados <br/>
+                {% for column in df.columns %}
+                    <input type="checkbox" name="columns_to_delete" value="{{ column }}"> Eliminar
+                    <input type="text" name="new_names" placeholder="Nuevo nombre" value="{{ column }}" required>
+                    <select name="new_types">
+                        <option value="">Elije el tipo de dato</option>
+                        <option value="int">Integer</option>
+                        <option value="float">Float</option>
+                        <option value="str">String</option>
+                    </select>
+                    <br>
+                {% endfor %}
+            <hr/>
+            {% endfor %}
+            <input type="submit" value="Aplicar cambios">
+        </form>
     </div>
 </body>
+</html>
